@@ -3,19 +3,25 @@ class Scene1 extends Phaser.Scene {
     super("bootGame");
   }
   preload() {
+    WebFont.load({ custom: {
+        families: ['Press Start 2P'],
+        urls: ['fonts.css']
+      }
+    });
+
     this.load.image("background", "Assets/Images/background.png");
     this.load.spritesheet("ship", "Assets/spritesheets/ship.png", {
       frameWidth: 16,
       frameHeight: 16
-    }); 
+    });
     this.load.spritesheet("ship2", "Assets/spritesheets/ship2.png", {
       frameWidth: 32,
       frameHeight: 16
-    }); 
+    });
     this.load.spritesheet("ship3", "Assets/spritesheets/ship3.png", {
       frameWidth: 32,
       frameHeight: 32
-    }); 
+    });
     this.load.spritesheet("explosion", "Assets/spritesheets/explosion.png", {
       frameWidth: 16,
       frameHeight: 16

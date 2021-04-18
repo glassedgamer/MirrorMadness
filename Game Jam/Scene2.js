@@ -5,11 +5,6 @@ class Scene2 extends Phaser.Scene {
     super("playGame");
   }
 
-  //preload() {
-    //this.load.css('Press Start 2P', 'styles.css');
-  //}
-
-
   create() {
     //this.background = this.add.image(0, 0, "background");
     this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
@@ -45,7 +40,7 @@ class Scene2 extends Phaser.Scene {
       powerUp.setBounce(1);
     }
 
-    
+
     this.ship1.play("ship1_anim");
     this.ship2.play("ship2_anim");
     this.ship3.play("ship3_anim");
@@ -55,7 +50,7 @@ class Scene2 extends Phaser.Scene {
     this.ship3.setInteractive();
 
     this.input.on('gameobjectdown', this.destroyShip, this);
-    
+
     this.player = this.physics.add.sprite(config.width / 2 - 8, config.height - 64, "player");
     //this.player.play("thrust");
     this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -72,7 +67,7 @@ class Scene2 extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
     this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
 
-    //this.add.text(0, 0, 'Hello World', { font: '"Press Start 2P"' });
+    this.add.text(50, 50, 'Hello World', { fontFamily: '"Press Start 2P"', fontSize: '20px' });
 
   }
   pickPowerUp(player, powerUp) {
@@ -143,5 +138,5 @@ class Scene2 extends Phaser.Scene {
     var lazer = new Lazer(this);
     this.projectiles.add(lazer);
   }
-  
+
 }
