@@ -9,6 +9,8 @@ class Scene1 extends Phaser.Scene {
       }
     });
 
+    this.load.audio("music", ["Assets/audio/MirrorMadnessTheme.mp3"]);
+
     this.load.image("background", "Assets/Images/background.png");
     this.load.spritesheet("ship", "Assets/spritesheets/ship.png", {
       frameWidth: 16,

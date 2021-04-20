@@ -67,20 +67,91 @@ class Scene2 extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
     this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
 
-    this.add.text(50, 50, 'Hello World', { fontFamily: '"Press Start 2P"', fontSize: '20px' });
+    var graphics = this.add.graphics();
+    graphics.fillStyle(0x000000, 1);
+    graphics.beginPath();
+    graphics.moveTo(0, 0);
+    graphics.lineTo(config.width, 0);
+    graphics.lineTo(config.width, 20);
+    graphics.lineTo(0, 20);
+    graphics.lineTo(0, 0);
+    graphics.closePath();
+    graphics.fillPath();
 
+    this.score = 0;
+
+    this.scoreLabel = this.add.text(5, 4, 'Score ', { fontFamily: '"Press Start 2P"', fontSize: '14px' });
+
+    this.music = this.sound.add("music");
+
+    var musicConfig = {
+      mute: false,
+      volume: 1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: true,
+      delay: 0
+    }
+    this.music.play(musicConfig);
+
+  }
+  resetPlayer() {
+    var x = config.width / 2 - 8;
+    var y = config.width + 64;
+    this.player.enableBody(true, x, y, true, true);
+
+    this.player.alpha = 0.5;
+
+    var tween = this.tweens.add({
+      targets: this.player,
+      y: config.height - 64,
+      ease: 'Power1',
+      duration: 1500,
+      repeat: 0,
+      onComplete: function() {
+        this.player.alpha = 1;
+      },
+      callbackScope: this
+    });
+  }
+  zeroPad(number, size) {
+    var stringNumber = String(number);
+    while(stringNumber.length < (size || 2)) {
+      stringNumber = "0" + stringNumber;
+    }
+    return stringNumber;
   }
   pickPowerUp(player, powerUp) {
       powerUp.disableBody(true, true);
   }
   hurtPlayer(player, enemy) {
     this.resetShipPos(enemy);
-    player.x = config.width / 2 - 8;
-    player.y = config.height - 64;
+
+    if(this.player.alpha < 1) {
+      return;
+    }
+    
+    var explosion = new Explosion(this, player.x, player.y);
+    player.disableBody(true, true);
+
+    this.time.addEvent({
+      delay: 1000,
+      callback: this.resetPlayer,
+      callbackScope: this,
+      loop: false
+    })
   }
   hitEnemy(projectile, enemy) {
+
+    var explosion = new Explosion(this, enemy.x, enemy.y);
+
     projectile.destroy();
     this.resetShipPos(enemy);
+    this.score += 15;
+    this.scoreLabel.text = "Score " + this.score;
+    var scoreFormatted = this.zeroPad(this.score, 6);
+    this.scoreLabel.text = "Score " + scoreFormatted;
   }
   moveShip(ship, speed) {
     //this.resetShipPos(ship);
@@ -99,7 +170,9 @@ class Scene2 extends Phaser.Scene {
     this.movePlayerManager();
 
     if(Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-      this.shootLazer();
+      if(this.player.active) {
+        this.shootLazer();
+      }
     }
     for(var i = 0; i < this.projectiles.getChildren().length; i++) {
       var lazer = this.projectiles.getChildren()[i];
